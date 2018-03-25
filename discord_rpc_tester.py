@@ -1,27 +1,26 @@
 import websockets
 import asyncio
-from auth_tests import run_auth_tests
-from text_tests import run_text_tests
-# from voice_tests import run_voice_tests
-from constants import RPC_HOSTNAME, RPC_QUERYSTRING, CLIENT_ID, RPC_ORIGIN, CLIENT_SECRET
+from tests.auth_tests import run_auth_tests
+from tests.text_tests import run_text_tests
+from tests.voice_tests import run_voice_tests
+from utils.constants import RPC_HOSTNAME, RPC_QUERYSTRING, CLIENT_ID, RPC_ORIGIN
 
 
 async def test():
-    print(""" Welcome to the Discord RPC Tester!
-          Let's make sure we didn't break anything... """)
+    print("Welcome to the Discord RPC Tester!")
+    print("Let's make sure we didn't break anything...\n")
 
     port = input('Enter the port to connect to: ')
-    # client_id = input('Enter the client_id of your application: ')
-    # client_secret = input('Enter the client_secret of your application: ')
     uri = RPC_HOSTNAME + port + RPC_QUERYSTRING + CLIENT_ID
     print("Opening connection to {}".format(uri))
     async with websockets.connect(uri, origin=RPC_ORIGIN) as ws:
         print('Connected! Let\'s begin:\n')
         r = await ws.recv()
         print(r)
-        if await run_auth_tests(ws, CLIENT_ID, CLIENT_SECRET):
+        user_id, group_dm = await run_auth_tests(ws)
+        if user_id is not None:
             await run_text_tests(ws)
-            # run_voice_tests(ws)
+            await run_voice_tests(ws, group_dm['id'], user_id)
             print('Yay! Tests completed!')
         else:
             print('Could not connect to RPC. Stopping')
