@@ -1,3 +1,4 @@
+import os
 from utils.utils import send_and_receive
 
 
@@ -57,9 +58,25 @@ async def select_text_channel(ws, channel_id):
     return
 
 
+async def set_activity(ws):
+    payload = {
+      'nonce': '12345',
+      'args': {
+        'pid': os.getpid(),
+        'activity': {
+          'state': 'Testing',
+          'details': 'Running the RPC tester'
+        }
+      }
+    }
+    await send_and_receive(ws, payload)
+    return
+
+
 async def run_text_tests(ws):
     channel_id = await get_channels(ws)
     await get_channel(ws, channel_id)
     guild_id = await get_guilds(ws)
     await get_guild(ws, guild_id)
+    await set_activity(ws)
     return
