@@ -67,7 +67,8 @@ async def set_activity(ws):
           'state': 'Testing',
           'details': 'Running the RPC tester'
         }
-      }
+      },
+      'cmd': 'SET_ACTIVITY'
     }
     await send_and_receive(ws, payload)
     return

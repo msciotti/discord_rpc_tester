@@ -1,6 +1,7 @@
 import requests
+import json
 from utils.utils import send_and_receive
-from utils.constants import TOKEN_URL, RPC_TOKEN_URL_FRAGMENT, BOT_TOKEN, CLIENT_ID, CLIENT_SECRET
+from utils.constants import TOKEN_URL, RPC_TOKEN_URL_FRAGMENT, BOT_TOKEN, CLIENT_ID, CLIENT_SECRET, GROUP_DM_URL
 
 
 async def authorize(ws, client_id, rpc_token):
@@ -81,7 +82,7 @@ def get_bearer_token(code):
 
 
 def create_group_dm(bearer_token, user_id):
-    r = requests.post(TOKEN_URL,
+    r = requests.post(GROUP_DM_URL,
                       headers={
                         'Authorization': 'Bot ' + BOT_TOKEN
                         },
@@ -92,6 +93,7 @@ def create_group_dm(bearer_token, user_id):
                         }
                       })
     group_dm = r.json()
+    print('\nTesting Create Group DM Endpoint \nResponse: ' + json.dumps(group_dm, indent=4))
     return group_dm
 
 
@@ -102,7 +104,7 @@ async def run_auth_tests(ws):
         print('Authorization failed!')
         return None
 
-    bearer_token = get_bearer_token(CLIENT_ID, CLIENT_SECRET, code)
+    bearer_token = get_bearer_token(code)
     user_id = await authenticate(ws, bearer_token)
     if user_id is None:
         print('Authentication failed!')

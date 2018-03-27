@@ -1,4 +1,5 @@
 TOKEN_URL = 'https://discordapp.com/api/oauth2/token'
+GROUP_DM_URL = 'https://discordapp.com/api/users/@me/channels'
 RPC_TOKEN_URL_FRAGMENT = '/rpc'
 RPC_HOSTNAME = 'ws://127.0.0.1:'
 RPC_QUERYSTRING = '?v=1&encoding=json&client_id='
